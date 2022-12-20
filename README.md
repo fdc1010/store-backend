@@ -5,12 +5,11 @@
 .
 ├── bin -> executable program
 ├── configs -> where all configs store in js file
-└── crons -> <soon>
-└── email-templates -> <soon>
+└── crons -> cron files needed <soon>
+└── email-templates -> templates for send email <soon>
 ├── handlers -> all handler for routing goes here
 ├── middlewares -> all middleware configuration goes here
-├── migrations -> <soon>
-├── mjml -> <soon>
+├── migrations -> db migration files
 ├── models -> all sequelize models
 ├── node_modules -> u know lah what it is
 ├── public -> directory to publish it on server
