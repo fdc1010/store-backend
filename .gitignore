@@ -68,3 +68,15 @@ yarn.lock
 email-templates
 crons
 mjml
+
+app.yaml
+bakup.env
+cloudbuild.yml
+db_store2.sql
+Dockerfile
+
+store_backend_old.sql
+store_backend.sql
+swagger-local.json
+swagger-staging.json
+temp_swagger.json
