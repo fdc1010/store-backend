@@ -16,8 +16,8 @@
 ├── public -> directory to publish it on server
 ├── routes -> all routes config goes here
 └── storage -> all file like data, or uploaded file goes here
-└── utils -> <soon>
-└── validators -> <soon>
+└── utils -> all script files needed as utilities / helpers
+└── validators -> script files for validation of entries
 ```
 
 ## Installation (Development)
