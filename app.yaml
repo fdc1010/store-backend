@@ -1,0 +1,189 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: store-backend
+spec:
+  type: NodePort
+  ports:
+    - name: store-backend
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: store-backend
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store-backend
+  template:
+    metadata:
+      labels:
+        app: store-backend
+    spec:
+      containers:
+        - name: store-backend
+          image: gcr.io/<gcp-project-id>/store-backend:latest
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 1
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 10
+            initialDelaySeconds: 5
+          volumeMounts:
+            - name: certs
+              mountPath: /app/configs/client-key.cer
+              subPath: client-key.cer
+            - name: certs
+              mountPath: /app/configs/client-cert.cer
+              subPath: client-cert.cer
+            - name: certs
+              mountPath: /app/configs/server-ca.cer
+              subPath: server-ca.cer
+          env:
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: PORT
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: NODE_ENV
+            - name: DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: DATABASE_URI
+            - name: GCS_KEY_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: GCS_KEY_PATH
+            - name: GCS_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: GCS_BUCKET_NAME
+            - name: GOOGLE_CLOUD_PROJECT
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: GOOGLE_CLOUD_PROJECT
+            - name: HITPAY_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: HITPAY_KEY
+            - name: HITPAY_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: HITPAY_SALT
+            - name: HITPAY_BASEURL
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: HITPAY_BASEURL
+            - name: BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: BASE_URL
+            - name: TRACKINGMORE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: TRACKINGMORE_URL
+            - name: TRACKINGMORE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: TRACKINGMORE_KEY
+            - name: TRACKINGMORE_USERTAG
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: TRACKINGMORE_USERTAG
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: SENDGRID_API_KEY
+            - name: SENDGRID_SENDER
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: SENDGRID_SENDER
+            - name: LALAMOVE_MARKET
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: LALAMOVE_MARKET
+            - name: LALAMOVE_BASEURL
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: LALAMOVE_BASEURL
+            - name: LALAMOVE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: LALAMOVE_API_KEY
+            - name: LALAMOVE_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: LALAMOVE_API_SECRET
+            - name: QXPERSS_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: QXPERSS_BASE_URL
+            - name: QXPRESS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: QXPRESS_API_KEY
+            - name: QXPRESS_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: QXPRESS_ACCOUNT_ID
+            - name: JTEXPRESS_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: JTEXPRESS_BASE_URL
+            - name: JTEXPRESS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: JTEXPRESS_USERNAME
+            - name: JTEXPRESS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: JTEXPRESS_PASSWORD
+            - name: JTEXPRESS_MERCHANT_CODE
+              valueFrom:
+                secretKeyRef:
+                  name: store-backend-api-secret
+                  key: JTEXPRESS_MERCHANT_CODE
+      volumes:
+        - name: certs
+          configMap:
+            name: store-backend-api-config

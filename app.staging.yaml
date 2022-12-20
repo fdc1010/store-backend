@@ -1,0 +1,79 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-store-backend-staging
+spec:
+  type: NodePort
+  ports:
+    - name: service-store-backend-staging
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: store-backend-staging
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-backend-staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store-backend-staging
+  template:
+    metadata:
+      labels:
+        app: store-backend-staging
+    spec:
+      containers:
+        - name: store-backend-staging
+          image: gcr.io/<gcp-project-id>/store-backend:latest
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 1
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 10
+            initialDelaySeconds: 5
+          volumeMounts:
+            - name: certs
+              mountPath: /app/configs/client-key.cer
+              subPath: client-key.cer
+            - name: certs
+              mountPath: /app/configs/client-cert.cer
+              subPath: client-cert.cer
+            - name: certs
+              mountPath: /app/configs/server-ca.cer
+              subPath: server-ca.cer
+          env:
+            - name: PORT
+              value: '80'
+            - name: DATABASE_URI
+              value: mysql://testuser1:password@<IP>:3306/store_backend
+            - name: GCS_KEY_PATH
+              value: /app/store-backend.json
+            - name: GCS_BUCKET_NAME
+              value: store-backend
+            - name: GOOGLE_CLOUD_PROJECT
+              value: store-backend
+            - name: HITPAY_KEY
+              value: <value>
+            - name: HITPAY_SALT
+              value: <value>
+            - name: HITPAY_BASEURL
+              value: <value>
+            - name: BASE_URL
+              value: <value>
+            - name: FIREBASE_KEY_PATH
+              value: /app/store-backend-firebase-adminsdk.json
+      volumes:
+        - name: certs
+          configMap:
+            name: store-api-config
