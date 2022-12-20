@@ -1,0 +1,15 @@
+{
+  "dialect": "mysql",
+  "host": "localhost",
+  "port": 3306,
+  "database": "db_store",
+  "omitNull": true,
+  "directory": "./models",
+  "additional" : {
+    "freezeTableName" : true,
+    "timestamps" : true,
+    "underscored": true,
+    "createdAt": "created_at",
+    "updatedAt": "updated_at"
+  }
+}
